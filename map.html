@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Display a radar layer</title>
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v1.1.1/maptiler-sdk.umd.min.js"></script>
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v1.1.1/maptiler-sdk.css" rel="stylesheet" />
+  <script src="https://cdn.maptiler.com/maptiler-weather/v1.1.0/maptiler-weather.umd.min.js"></script>
+  <style>
+    body { margin: 0; padding: 0; font-family: sans-serif; }
+    #map { position: absolute; top: 0; bottom: 100px; width: 100%; }
+    #pointer-data {
+      z-index: 1;
+      position: fixed;
+      font-size: 20px;
+      font-weight: 900;
+      margin: 27px 0px 100px 10px;
+      color: #fff;
+      text-shadow: 0px 100px 10px #0007;
+    }
+
+    #variable-name {
+      z-index: 1;
+      position: fixed;
+      font-size: 20px;
+      font-weight: 500;
+      margin: 5px 0px 100px 10px;
+      color: #fff;
+      text-shadow: 0px 100px 10px #0007;
+    }
+
+    #time-info {
+      position: fixed;
+      width: 60vw;
+      bottom: 0;
+      z-index: 1;
+      margin: 10px;
+      text-shadow: 0px 100px 5px black;
+      color: white;
+      font-size: 18px;
+      font-weight: 500;
+      text-align: center;
+      left: 0;
+      right: 0;
+      margin: auto;
+      padding: 20px;
+    }
+
+    #time-text {
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .historical{
+      display:block;
+      margin-top:400px;
+    }
+
+
+/* CSS */
+  .button-15 {
+    touch-action: manipulation;
+    border-radius: 8px;
+    border: 0;
+    padding: 10px 16px;
+    background-image: linear-gradient(to bottom, #84b709, #46a100);
+    box-shadow: inset 0 -2px Rgb(0 0 0/0.2), 0 2px 4px Rgb(0 0 0/0.2);
+    text-align: center;
+    font-weight: 600;
+    color: #fff;
+    transition-property: transform, opacity;
+    transition-duration: .4s, .2s;
+    transition-timing-function: cubic-bezier(0.55, 1, 0.15, 1), ease-in-out;
+}
+
+  .button-15:active:not(:disabled) {
+    transform: scale(0.92);
+}
+  #Indian{
+    background-image: linear-gradient(to bottom, #DC8686, #B06161);
+  }
+  #Pacific{
+    background-image: linear-gradient(to bottom, #BA94D1, #7F669D);
+  }
+
+
+
+    
+
+</style>
+</head>
+<body>
+  <div id="time-info">
+    <span id="time-text"></span>
+  </div>
+  <div id="variable-name">Radar</div>
+  <div id="pointer-data"></div>
+  <div id="map"></div>
+  <h2>Destructive Hurricanes by Ocean</h2>
+  <div class="historical">
+    <button class="button-15" role="button" onclick="atl_button()">Atlantic</button> 
+    <button class="button-15" id="Pacific" role="button" onclick="pac_button()">Pacific</button>
+    <button class="button-15" id="Indian" role="button" onclick="ind_button()">Indian</button>
+  </div>
+  <script>
+      //require('dotenv').config();
+      maptilersdk.config.apiKey = '8ndZihLxjeNnK7h3fJL1';
+      const map = (window.map = new maptilersdk.Map({
+        container: 'map', // container's id or the HTML element to render the map
+        style: maptilersdk.MapStyle.BACKDROP,  // stylesheet location
+        zoom: 1,
+        center: [-15.5, 15.2],
+        hash: true,
+      }));
+
+      const timeTextDiv = document.getElementById("time-text");
+      const pointerDataDiv = document.getElementById("pointer-data");
+      let pointerLngLat = null;
+
+      const weatherLayer = new maptilerweather.RadarLayer({
+        opacity: 0.8,
+      });
+      const weatherLayer2 = new maptilerweather.TemperatureLayer({
+        colorramp: maptilerweather.ColorRamp.builtin.TEMPERATURE_3
+      });
+
+      // Called when the animation is progressing
+      weatherLayer2.on("tick", event => {
+        refreshTime();
+        updatePointerValue(pointerLngLat);
+      });
+
+
+      // Called when the animation is progressing
+      weatherLayer.on("tick", event => {
+        refreshTime();
+        updatePointerValue(pointerLngLat);
+      });
+
+      map.on('load', function () {
+        map.setPaintProperty("Water", 'fill-color', "rgba(0, 0, 0, 0.4)");
+        map.addLayer(weatherLayer2, 'Water');
+        map.addLayer(weatherLayer, 'Water');
+        weatherLayer.animateByFactor(3600);
+      });
+
+
+      // Update the date time display
+      function refreshTime() {
+        const d = weatherLayer.getAnimationTimeDate();
+        timeTextDiv.innerText = d.toString();
+      }
+
+      function updatePointerValue(lngLat) {
+        if (!lngLat) return;
+        pointerLngLat = lngLat;
+        const value = weatherLayer.pickAt(lngLat.lng, lngLat.lat);
+        if (!value) {
+          pointerDataDiv.innerText = "";
+          return;
+        }
+        pointerDataDiv.innerText = `${value.value.toFixed(1)} dBZ`
+      }
+      function atl_button(){
+        const marker = new maptilersdk.Marker({color:"#84b709"})
+        .setLngLat([-82.452606, 27.964157])
+        .setPopup(new maptilersdk.Popup().setHTML('<h3>'+"Hurricane Irma"+'</h3><p>'+"August 31-September 12, 2017"+'<br>'+"Category 5 hurricane (>177mph), Storm Surge: 3.5ft"+'<br>'+"Caribbean Sea (~83°F)"+'<br>'+"Impacted: Leeward Islands, Puerto Rico, Dominican Republic,Cuba, Florida"+'<br>'+"Damages: 129 fatalities, $2.5 billion in damage"+'</p>'))
+        .addTo(map);
+        }
+      function pac_button(){
+        const marker = new maptilersdk.Marker({color:"#BA94D1"})
+        .setLngLat([124.9617, 11.2543])
+        .setPopup(new maptilersdk.Popup().setHTML('<h3>'+"Typhoon Haiyan"+'</h3><p>'+"November 3-November 11, 2013"+'<br>'+"Category 5 hurricane (>196mph), Storm Surge: 24.6ft"+'<br>'+"Philippines Sea (~85°F)"+'<br>'+"Impacted: Philippines, Vietnam, Laos, China "+'<br>'+"Damages: 6,352 fatalities, $2.98 billion in damage"+'</p>'))
+        .addTo(map);
+      }
+      function ind_button(){
+        const marker = new maptilersdk.Marker({color: "#DC8686"})
+        .setLngLat([71.5724, 22.6708])
+        .setPopup(new maptilersdk.Popup().setHTML('<h3>'+"Cyclone Tauktae"+'</h3><p>'+"May 14-May 17, 2021"+'<br>'+"Category 4 hurricane (>136mph), Storm Surge: 9.8ft"+'<br>'+"Arabian Sea (~86°F)"+'<br>'+"Impacted: Gujarat,India, Hyderabad,Pakistan"+'<br>'+"Damages: 174 fatalities, $1.57 billion in damage"+'</p>'))
+        .addTo(map);
+      }
+  </script>
+</body>
+</html>

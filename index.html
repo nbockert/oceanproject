@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Climate Change's Impact on Hurricanes</title>
+        <link
+            rel="stylesheet"
+            href="./styles.css"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.maptiler.com/maptiler-sdk-js/v1.1.1/maptiler-sdk.umd.min.js"></script>
+        <link href="https://cdn.maptiler.com/maptiler-sdk-js/v1.1.1/maptiler-sdk.css" rel="stylesheet" />
+        <script src="https://cdn.maptiler.com/maptiler-weather/v1.1.0/maptiler-weather.umd.min.js"></script>
+
+    </head>
+    <body>
+        <div id="headerimage" style="background-color:white;background-image:url(/Users/norabockert/Desktop/OceanData/Screenshot2023-11-19at10.55.08.png);
+            border:1px solid black;
+            width:auto;
+            height:300px;
+            font-size:30px;">
+            <h1>Climate Change's Impact on Hurricanes</h1>
+            <h3>By Nora Bockert</h3>
+        </div>
+        <hr />
+        <h2>How do Hurricanes Form?</h2>
+        <div class="phases">
+            <img id="phase1"src='/Users/norabockert/Desktop/OceanData/1.jpg'>
+        </div>
+        <div class="buttons">
+            <button class="button-85" role="button" onclick="rotateImage('/Users/norabockert/Desktop/OceanData/1.jpg')">Phase 1</button>
+            <button class="button-85" role="button" onclick="rotateImage('/Users/norabockert/Desktop/OceanData/2.jpg')">Phase 2</button>
+            <button class="button-85" role="button" onclick="rotateImage('/Users/norabockert/Desktop/OceanData/3.jpg')">Phase 3</button>
+            <button class="button-85" role="button" onclick="rotateImage('/Users/norabockert/Desktop/OceanData/3.png')">Phase 4</button>
+            <button class="button-85" role="button" onclick="rotateImage('/Users/norabockert/Desktop/OceanData/Blue Illustrative Organic Ocean Habitat Presentation.png')">Phase 5</button>
+        </div>
+        <script>
+            function rotateImage(filename) {
+                // Get the image element
+                var img = document.querySelector('#phase1');
+                img.setAttribute("src",filename);
+            }
+        </script>
+        <h2>Hurricanes and Climate Change</h2>
+        <iframe style="height: 500px; width:100%" src="/Users/norabockert/Desktop/OceanData/map.html"></iframe>
+        <div class="container">
+            <div id="charts">
+                <div class="block">
+                    <img src='/Users/norabockert/Desktop/OceanData/Cat3.png'>
+                </div>
+                <h2 id="seadata">Sea Temperatures from 1880-2022</h2>
+                <div class="block">
+                    <img src='/Users/norabockert/Desktop/OceanData/seatemp.png'>
+                </div>
+            </div>
+            <div class="text">
+                <p>
+                  Although there is not a link between climate change and the number of hurricanes, there is a connection between climate change and the severity of hurricanes. As the surface temperature of the oceans rises, the storms over the open ocean intensify because more warm water is evaporating and condensing. If you look at 2015 on both graphs, there were 39 Cat. 3+ hurricanes and the sea temperature had risen 0.8°C. In addition, in the example above, typhoon Haiyan was so catastrophic because of many factors. For one, the storm was able to generate strength and large waves since there are few land disruptions in the Pacific. Typically as the hurricane moves over cold water or land, the storm will break up and weaken. Yet, since the temperature of the Philippines Sea was ~86°F and since there are many small islands in the area, when the typhoon struck, it had a storm surge of 24ft, and it continued all the way up until China. There is plenty of evidence that proves warmer water fuels hurricanes, so as the sea levels continue to rise and warm as a result of Climate Change, this can have devastating impacts on hurricanes strength and on coastal communities. <br> Thank you for viewing my website. It was created in html, javascript, and css and the heat and radar map is from the MapTiler API. 
+                </p>
+            </div>
+        </div>
+        
+
+           
+
+    </body>
+    
+</html>
